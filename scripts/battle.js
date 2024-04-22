@@ -3,7 +3,9 @@ let attacks=[];
 let hp, hp_o;
 let attacks_o = [];
 let multiplier = 5;
-let waitForPressResolve;
+let waitForPressResolve = null;
+const hpElement = document.getElementById('hpValue');
+const hpElement_o = document.getElementById('hpValue_o');
 
 document.addEventListener("DOMContentLoaded", () => {
     const total_pokemons = 100;
@@ -140,16 +142,6 @@ async function loadPokemon(id) {
     }
 }
 
-function getEnglishFlavorText(pokemonSpecies) {
-    for (let entry of pokemonSpecies.flavor_text_entries) {
-      if (entry.language.name === "en") {
-        let flavor = entry.flavor_text.replace(/\f/g, " ");
-        return flavor;
-      }
-    }
-    return "";
-}
-
 function displayDetails(pokemon) {
     const {name, id, types, weight, height, abilities, stats} = pokemon;
     const pokemonName = capitalizeFirstLetter(name);
@@ -172,8 +164,9 @@ function displayDetails(pokemon) {
         });
     });
 
-    const hpElement = document.getElementById('hpValue');
+    //const hpElement = document.getElementById('hpValue');
     hpElement.textContent = hp;
+
 
     let button_html = "";
   for (let val of attacks) {
@@ -245,7 +238,7 @@ function displayDetails_o(pokemon) {
       });
   });
 
-  const hpElement_o = document.getElementById('hpValue_o');
+  //const hpElement_o = document.getElementById('hpValue_o');
     hpElement_o.textContent = hp_o;
 
   let button_html = "";
@@ -256,51 +249,41 @@ function displayDetails_o(pokemon) {
   
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+async function gameplay() {
+//   document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click", damager));
+
+  while (hp > 0 && hp_o > 0) {
+    playerAttack();
+    if (hp_o === 0) {
+      break;
+    }
+    opponentAttack();
+    if (hp === 0) {
+      break;
+    }
+  }
+}
+
+async function playerAttack() {
+  document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click", damager));
 }
 
 async function damager(event) {
   const clicked_button = event.target;
   let button_details = clicked_button.className;
   button_details = button_details.split(" ");
-  for (val of attacks) {
+  for (let val of attacks) {
     if (val[0] == button_details[1]) {
       hp_o -= val[2];
       updateHP_o(hp_o);
-      if (hp_o < 0) {
+      if (hp_o <= 0) {
         hp_o = 0;
         updateHP_o(hp_o);
         return;
       }
-      await sleep(1000);
     }
   }
   btnResolver();
-}
-
-async function gameloop() {
-  let x, his_attack;
-  while (hp > 0 && hp_o > 0) {
-    await waitForPress();
-
-    x = Math.floor(Math.random() * attacks_o.length);
-    his_attack = attacks_o[x];
-
-    await sleep(1000);
-
-    hp -= his_attack[2];
-    console.log("hp after attack ", hp);
-    updateHP(hp);
-    if (hp < 0) {
-      hp = 0;
-      updateHP(hp);
-      break;
-    }
-  }
-  document
-    .querySelectorAll(".attack_buttons")
-    .forEach((button) => button.removeEventListener("click", damager));
 }
 
 function waitForPress() {
@@ -311,12 +294,18 @@ function btnResolver() {
   if (waitForPressResolve) waitForPressResolve();
 }
 
-async function gameplay() {
-  document
+async function opponentAttack() {
+    let x = Math.floor(Math.random() * attacks_o.length);
+    let his_attack = attacks_o[x];
+
+    hp -= his_attack[2];
+    console.log("hp after attack ", hp);
+    updateHP(hp);
+    if (hp <= 0) {
+      hp = 0;
+      updateHP(hp);
+    }
+    document
     .querySelectorAll(".attack_buttons")
-    .forEach((button) => button.addEventListener("click", damager));
-
-    gameloop(hp, hp_o);
+    .forEach((button) => button.removeEventListener("click", damager));
 }
-
-gameplay();
