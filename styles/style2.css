@@ -1,0 +1,138 @@
+body {
+    background-image: url(../assets/map.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+}
+
+.player {
+    background-image: url("../assets/player_back.png");
+    height: 3rem;
+    width: 3rem;
+    background-size: 150px 50px;
+    background-position: -40px 0;
+    position: fixed;
+    z-index: 1000;
+}
+
+.player.active {
+    animation: .2s walk linear infinite;
+}
+
+@keyframes walk{
+    0%, 33%{
+        background-position: 0 0;
+    }
+    34%, 67%{
+        background-position: -40px 0;
+    }
+    68%, 100%{
+        background-position: -80px 0;
+    }
+}
+
+.pokeball{
+    width: 20px;
+    height: 20px;
+    background-image: url("../assets/pokeball.png");
+    background-size: 100% 100%;
+    position: fixed;
+}
+
+.pokemon-card {
+    background-color: #e9bfbf;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.pokemon-header {
+    display: flex;
+    align-items: center;
+}
+
+.pokemon-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 0;
+    margin-right: 20px;
+}
+
+.pokemon-info {
+    flex: 1;
+}
+
+.pokemon-name {
+    font-size: 24px;
+    margin: 0 0 10px 0;
+}
+
+.pokemon-type,
+.pokemon-weight,
+.pokemon-height,
+.pokemon-moves,
+.pokemon-tagline {
+    margin: 0;
+    padding: 2px;
+}
+.pokemon-stats {
+    margin-top: 20px;
+}
+
+.stats-wrap {
+    display: flex;
+    align-items: center;
+  }
+  
+  .stats-wrap p {
+    color: var(--grayscale-dark);
+    margin-right: 8px;
+    min-width: 19px;
+  }
+  
+  .stats-wrap p.stats {
+    text-align: right;
+    padding-right: 8px;
+    min-width: 35px;
+    border-right: 1px solid var(--grayscale-light);
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .stats-wrap .progress-bar {
+    flex: 1;
+    border-radius: 4px;
+    height: 4px;
+  }
+  
+  .stats-wrap .progress-bar::-webkit-progress-bar {
+    border-radius: 4px;
+  }
+  
+  .stats-wrap .progress-bar::-webkit-progress-value {
+    border-radius: 4px;
+  }
+
+.pokemon-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.battle-btn,
+.search-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.battle-btn:hover,
+.search-btn:hover {
+    background-color: #45a049;
+}
