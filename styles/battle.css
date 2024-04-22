@@ -182,3 +182,16 @@
     align-items: center;
 }
 
+.battle{
+    background-color: #ff5733; /* Background color */
+    color: #ffffff; /* Text color */
+    padding: 10px 20px; /* Padding */
+    font-size: 16px; /* Font size */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+  }
+  
+  .battle:hover {
+    background-color: #d63600; /* Darker background color on hover */
+  }

@@ -1,4 +1,9 @@
 let current_id = null;
+let attacks=[];
+let hp, hp_o;
+let attacks_o = [];
+let multiplier = 5;
+let waitForPressResolve;
 
 document.addEventListener("DOMContentLoaded", () => {
     const total_pokemons = 100;
@@ -60,6 +65,59 @@ function setElementStyles(elements, cssProperty, value) {
     parent.appendChild(element);
     return element;
   }
+
+  async function search_pokemon_and_attacks(pokemon) {
+    let attacks = [];
+    for (let val of pokemon["moves"]) {
+      if (
+        val.version_group_details.some(
+          (method) => method.move_learn_method.name === "level-up"
+        )
+      ) {
+        let move_name = val["move"]["name"]; 
+        let damage = await attack_damage(move_name); 
+        if (damage[1] != null) {
+          attacks.push([move_name, damage[0], damage[1]]); 
+        }
+      }
+    }
+    return attacks; 
+  }
+
+  async function attack_damage(query) {
+    const res = await fetch(`https://pokeapi.co/api/v2/move/${query}`);
+    if (!res.ok) {
+      return query + " is invalid"; 
+    } else {
+      let attack = await res.json(); 
+      if (
+        attack.damage_class.name == "physical" ||
+        attack.damage_class.name == "special"
+      ) {
+        return [attack.damage_class.name, attack["power"]]; 
+      } else {
+        return [attack.damage_class.name, null];
+      }
+    }
+  }
+
+  function getHP(data) {
+    for (let stat of data.stats) {
+      if (stat.stat.name == "hp") {
+        return Number(stat["base_stat"]);
+      }
+    }
+  }
+
+  function updateHP(newHP) {
+    hp = newHP;
+    hpElement.textContent = hp; 
+  }
+
+  function updateHP_o(newHP) {
+    hp_o = newHP;
+    hpElement_o.textContent = hp_o; 
+  }
   
 async function loadPokemon(id) {
     try {
@@ -68,18 +126,13 @@ async function loadPokemon(id) {
             fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then((res) => res.json()),
         ]);
 
-        //console.log(pokemon);
-
-        const moveWrap = document.querySelector(".move-wrap");
-        moveWrap.innerHTML = "";
+        attacks = await search_pokemon_and_attacks(pokemon);
+        hp = getHP(pokemon);
+        hp = hp * multiplier;
 
         if (current_id === id) {
             displayDetails(pokemon);
-            const flavorText = getEnglishFlavorText(pokemonSpecies);
-            document.querySelector(".font1 .tagline").textContent = flavorText;
-            window.history.pushState({}, "", `./detail.html?id=${id}`);
         }
-
         return true;
     } catch(error) {
         console.error("error while fetching", error);
@@ -119,46 +172,18 @@ function displayDetails(pokemon) {
         });
     });
 
-    const movesWrap = document.querySelector(".move-wrap");
-    abilities.forEach(({ability}) => {
-        createAndAppendElement(movesWrap, "p", {
-            className: "font1",
-            textContent: ability.name,
-        });
-    });
+    const hpElement = document.getElementById('hpValue');
+    hpElement.textContent = hp;
 
-    const statsWrap = document.querySelector(".stats-wrapper");
-    statsWrap.innerHTML = "";
-
-    const statName = {
-        hp: "HP",
-        attack: "ATK",
-        defense: "DEF",
-        "special-attack": "SATK",
-        "special-defense": "SDEF",
-        speed: "SPD",
-    };
-
-    console.log(statName);
-
-    stats.forEach(({ stat, base_stat }) => {
-        const statDiv = document.createElement("div");
-        statDiv.className = "stats";
-        statsWrap.appendChild(statDiv);
-    
-        createAndAppendElement(statDiv, "p", {
-          className: "font2 stat",
-          textContent: statName[stat.name],
-        });
-    
-        createAndAppendElement(statDiv, "p", {
-          className: "font2",
-          textContent: String(base_stat).padStart(3, "0"),
-        });
-    });
+    let button_html = "";
+  for (let val of attacks) {
+    button_html += `<button class="attack_buttons ${val[0]}"> ${val[0]} : ${val[2]} </button>`;
+  }
+  document.querySelector(".attacks").innerHTML = button_html;
 }
 
 let opponent_id = null;
+let oid = null;
 
 function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -170,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (opponent_id < 1 || opponent_id > total_pokemons) {
     opponent_id = 4;
   }
+  oid = opponent_id;
   loadOpponent_o(opponent_id);
 });
 
@@ -182,13 +208,12 @@ async function loadOpponent_o(opponent_id) {
       ]);
 
       //console.log("opponent data ", pokemon, pokemonSpecies);
-
-      const moveWrap_o = document.querySelector(".move-wrap_o");
-      moveWrap_o.innerHTML = "";
-
+      
+      attacks_o = await search_pokemon_and_attacks(pokemon);
+      hp_o = getHP(pokemon);
+      hp_o = hp_o * multiplier;
+  
       displayDetails_o(pokemon);
-      const flavorText = getEnglishFlavorText(pokemonSpecies);
-      document.querySelector(".font1 .tagline_o").textContent = flavorText;
 
       return true;
   } catch(error) {
@@ -199,7 +224,7 @@ async function loadOpponent_o(opponent_id) {
 
 function displayDetails_o(pokemon) {
   const {name, id, types, weight, height, abilities, stats} = pokemon;
-  console.log("display ", pokemon);
+  //console.log("display ", pokemon);
   const pokemonName_o = capitalizeFirstLetter(name);
 
   const mainElement_o = document.querySelector(".main_o");
@@ -220,40 +245,78 @@ function displayDetails_o(pokemon) {
       });
   });
 
-  const movesWrap_o = document.querySelector(".move-wrap_o");
-  movesWrap_o.innerHTML = "";
-  abilities.forEach(({ability}) => {
-      createAndAppendElement(movesWrap_o, "p", {
-          className: "font1",
-          textContent: ability.name,
-      });
-  });
+  const hpElement_o = document.getElementById('hpValue_o');
+    hpElement_o.textContent = hp_o;
 
-  const statsWrap_o = document.querySelector(".stats-wrapper_o");
-  statsWrap_o.innerHTML = "";
-
-  const statName_o = {
-      hp: "HP",
-      attack: "ATK",
-      defense: "DEF",
-      "special-attack": "SATK",
-      "special-defense": "SDEF",
-      speed: "SPD",
-  };
-
-  stats.forEach(({ stat, base_stat }) => {
-      const statDiv_o = document.createElement("div");
-      statDiv_o.className = "stats_o";
-      statsWrap_o.appendChild(statDiv_o);
+  let button_html = "";
+  for (let val of attacks_o) {
+    button_html += `<button class="attack_buttons_o ${val[0]}"> ${val[0]} : ${val[2]} </button>`;
+  }
+  document.querySelector(".attacks_o").innerHTML = button_html;
   
-      createAndAppendElement(statDiv_o, "p", {
-        className: "font2 stat_o",
-        textContent: statName_o[stat.name],
-      });
-  
-      createAndAppendElement(statDiv_o, "p", {
-        className: "font2",
-        textContent: String(base_stat).padStart(3, "0"),
-      });
-  });
 }
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function damager(event) {
+  const clicked_button = event.target;
+  let button_details = clicked_button.className;
+  button_details = button_details.split(" ");
+  for (val of attacks) {
+    if (val[0] == button_details[1]) {
+      hp_o -= val[2];
+      updateHP_o(hp_o);
+      if (hp_o < 0) {
+        hp_o = 0;
+        updateHP_o(hp_o);
+        return;
+      }
+      await sleep(1000);
+    }
+  }
+  btnResolver();
+}
+
+async function gameloop() {
+  let x, his_attack;
+  while (hp > 0 && hp_o > 0) {
+    await waitForPress();
+
+    x = Math.floor(Math.random() * attacks_o.length);
+    his_attack = attacks_o[x];
+
+    await sleep(1000);
+
+    hp -= his_attack[2];
+    console.log("hp after attack ", hp);
+    updateHP(hp);
+    if (hp < 0) {
+      hp = 0;
+      updateHP(hp);
+      break;
+    }
+  }
+  document
+    .querySelectorAll(".attack_buttons")
+    .forEach((button) => button.removeEventListener("click", damager));
+}
+
+function waitForPress() {
+  return new Promise((resolve) => (waitForPressResolve = resolve));
+}
+
+function btnResolver() {
+  if (waitForPressResolve) waitForPressResolve();
+}
+
+async function gameplay() {
+  document
+    .querySelectorAll(".attack_buttons")
+    .forEach((button) => button.addEventListener("click", damager));
+
+    gameloop(hp, hp_o);
+}
+
+gameplay();
