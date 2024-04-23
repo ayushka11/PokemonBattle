@@ -8,10 +8,10 @@ body {
 
 .player {
     background-image: url("../assets/player_back.png");
-    height: 3rem;
-    width: 3rem;
-    background-size: 150px 50px;
-    background-position: -40px 0;
+    height: 100px;
+    width: 80px;
+    background-size: 240px 100px;
+    background-position: -80px 0;
     position: fixed;
     z-index: 1000;
 }
@@ -21,23 +21,23 @@ body {
 }
 
 @keyframes walk{
-    0%, 33%{
+    0%, 30%{
         background-position: 0 0;
     }
-    34%, 67%{
+    35%, 63%{
         background-position: -40px 0;
     }
-    68%, 100%{
+    66%, 98%{
         background-position: -80px 0;
     }
 }
 
 .pokeball{
-    width: 20px;
-    height: 20px;
-    background-image: url("../assets/pokeball.png");
-    background-size: 100% 100%;
-    position: fixed;
+  width: 30px;
+  height: 30px;
+  background-image: url("../assets/pokeball.png");
+  background-size: 100% 100%;
+  position: fixed;
 }
 
 .main {

@@ -1,6 +1,7 @@
 let current_id = null;
 let attacks=[];
-let hp, hp_o;
+let hp = localStorage.getItem("hp"); //done
+let hp_o = localStorage.getItem("hp_o"); //done
 let attacks_o = [];
 let multiplier = 5;
 let waitForPressResolve = null;
@@ -83,6 +84,7 @@ function setElementStyles(elements, cssProperty, value) {
         }
       }
     }
+    console.log ("search_pokemon_and_attack runs and returns ", attacks); //debug
     return attacks; 
   }
 
@@ -96,8 +98,10 @@ function setElementStyles(elements, cssProperty, value) {
         attack.damage_class.name == "physical" ||
         attack.damage_class.name == "special"
       ) {
+        console.log("attack_damage runs"); //debug
         return [attack.damage_class.name, attack["power"]]; 
       } else {
+        console.log("attack_damage runs"); //debug
         return [attack.damage_class.name, null];
       }
     }
@@ -106,6 +110,7 @@ function setElementStyles(elements, cssProperty, value) {
   function getHP(data) {
     for (let stat of data.stats) {
       if (stat.stat.name == "hp") {
+        console.log("get_hp runs"); //debug
         return Number(stat["base_stat"]);
       }
     }
@@ -114,11 +119,15 @@ function setElementStyles(elements, cssProperty, value) {
   function updateHP(newHP) {
     hp = newHP;
     hpElement.textContent = hp; 
+    localStorage.setItem('hp', hp); //done
+    console.log("updateHP runs"); //debug
   }
 
   function updateHP_o(newHP) {
     hp_o = newHP;
     hpElement_o.textContent = hp_o; 
+    localStorage.setItem('hp_o', hp_o); //done
+    console.log("updateHP_o runs"); //debug
   }
   
 async function loadPokemon(id) {
@@ -131,10 +140,12 @@ async function loadPokemon(id) {
         attacks = await search_pokemon_and_attacks(pokemon);
         hp = getHP(pokemon);
         hp = hp * multiplier;
+        localStorage.setItem('hp', hp); //done
 
         if (current_id === id) {
             displayDetails(pokemon);
         }
+        console.log("loadPokemon runs"); //debug
         return true;
     } catch(error) {
         console.error("error while fetching", error);
@@ -173,6 +184,7 @@ function displayDetails(pokemon) {
     button_html += `<button class="attack_buttons ${val[0]}"> ${val[0]} : ${val[2]} </button>`;
   }
   document.querySelector(".attacks").innerHTML = button_html;
+  console.log("displayDetails runs"); //debug
 }
 
 let opponent_id = null;
@@ -207,7 +219,7 @@ async function loadOpponent_o(opponent_id) {
       hp_o = hp_o * multiplier;
   
       displayDetails_o(pokemon);
-
+      console.log("loadOpponent runs"); //debug
       return true;
   } catch(error) {
       console.error("error while fetching", error);
@@ -236,6 +248,8 @@ function displayDetails_o(pokemon) {
           className: `font1 type ${type.name}`,
           textContent: type.name,
       });
+
+  
   });
 
   //const hpElement_o = document.getElementById('hpValue_o');
@@ -245,27 +259,40 @@ function displayDetails_o(pokemon) {
   for (let val of attacks_o) {
     button_html += `<button class="attack_buttons_o ${val[0]}"> ${val[0]} : ${val[2]} </button>`;
   }
+  console.log(89)
   document.querySelector(".attacks_o").innerHTML = button_html;
-  
+  console.log("displayDetails_o runs"); //debug
+  gameplay();
 }
-
 async function gameplay() {
 //   document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click", damager));
-
-  while (hp > 0 && hp_o > 0) {
-    playerAttack();
-    if (hp_o === 0) {
-      break;
-    }
-    opponentAttack();
-    if (hp === 0) {
-      break;
-    }
-  }
+playerAttack();
+console.log("player_turn in gameplay: ", player_turn);
+  // while (hp > 0 && hp_o > 0) {
+    
+  //   if (hp_o === 0 || hp === 0) {
+  //     break;
+  //   }
+  //   if(!player_turn)
+  //     opponentAttack();
+  //   else
+  //     playerAttack();
+  //   setTimeout(() => console.log("time out done"), 1000);
+  // }
+  console.log("gameplay runs"); //debug
 }
 
-async function playerAttack() {
-  document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click", damager));
+function playerAttack() {
+
+  let buttons = document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click",()=> {
+    damager(event);
+    console.log("button clicked");
+    opponentAttack();
+  }
+  ));
+  console.log("player: ", buttons);
+  console.log("playerAttack runs"); //debug
+  
 }
 
 async function damager(event) {
@@ -279,6 +306,7 @@ async function damager(event) {
       if (hp_o <= 0) {
         hp_o = 0;
         updateHP_o(hp_o);
+        console.log("damager runs"); //debug
         return;
       }
     }
@@ -287,25 +315,34 @@ async function damager(event) {
 }
 
 function waitForPress() {
+  console.log("waitForPress runs"); //debug
   return new Promise((resolve) => (waitForPressResolve = resolve));
 }
 
 function btnResolver() {
-  if (waitForPressResolve) waitForPressResolve();
+  if (waitForPressResolve){ 
+    waitForPressResolve()
+    console.log("btnResolver runs"); //debug
+  };
 }
 
 async function opponentAttack() {
+    player_turn = true;
     let x = Math.floor(Math.random() * attacks_o.length);
     let his_attack = attacks_o[x];
 
     hp -= his_attack[2];
     console.log("hp after attack ", hp);
     updateHP(hp);
+
     if (hp <= 0) {
       hp = 0;
       updateHP(hp);
     }
-    document
-    .querySelectorAll(".attack_buttons")
-    .forEach((button) => button.removeEventListener("click", damager));
+    // let buttons = document
+    // .querySelectorAll(".attack_buttons")
+    // .forEach((button) => button.removeEventListener("click", damager));
+    // console.log(buttons);
+    console.log("opponentAttack runs"); //debug
+    
 }
