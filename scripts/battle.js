@@ -267,7 +267,7 @@ function displayDetails_o(pokemon) {
 async function gameplay() {
 //   document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click", damager));
 playerAttack();
-console.log("player_turn in gameplay: ", player_turn);
+//console.log("player_turn in gameplay: ", player_turn);
   // while (hp > 0 && hp_o > 0) {
     
   //   if (hp_o === 0 || hp === 0) {
@@ -306,6 +306,7 @@ async function damager(event) {
       if (hp_o <= 0) {
         hp_o = 0;
         updateHP_o(hp_o);
+        window.location.href = `youwon.html`;
         console.log("damager runs"); //debug
         return;
       }
@@ -338,6 +339,7 @@ async function opponentAttack() {
     if (hp <= 0) {
       hp = 0;
       updateHP(hp);
+      window.location.href = `gameover.html`;
     }
     // let buttons = document
     // .querySelectorAll(".attack_buttons")
