@@ -44,7 +44,7 @@
 
 .type {
     display: inline-block;
-    background-color: #ffcc00;
+    background-color: #000000;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
@@ -128,7 +128,7 @@
 
 .type_o {
     display: inline-block;
-    background-color: #ffcc00;
+    background-color: #000000;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
@@ -194,4 +194,25 @@
   
   .battle:hover {
     background-color: #d63600; /* Darker background color on hover */
+  }
+
+  .attack_buttons,
+  .attack_buttons_o {
+      background-color: #fa5102;
+      border: none;
+      color: #333;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 10px;
+      margin-right: 20px;
+  }
+  
+  .attack_buttons:hover,
+  .attack_buttons_o:hover {
+      background-color: #ffdb4d;
   }
