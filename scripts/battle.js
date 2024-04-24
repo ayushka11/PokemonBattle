@@ -21,6 +21,33 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPokemon(id);
 });
 
+function showLoadingScreen() {
+  var loadingScreen = document.createElement("div");
+  loadingScreen.id = "loading-screen";
+  loadingScreen.style.position = "fixed";
+  loadingScreen.style.top = "0";
+  loadingScreen.style.left = "0";
+  loadingScreen.style.width = "100%";
+  loadingScreen.style.height = "100%";
+  loadingScreen.style.backgroundColor = "rgba(255, 255, 255, 0.7)";
+  loadingScreen.style.zIndex = "9999";
+  
+  loadingScreen.innerHTML = "<p>Loading...</p>"; 
+  
+  document.body.appendChild(loadingScreen);
+}
+
+function hideLoadingScreen() {
+  var loadingScreen = document.getElementById("loading-screen");
+  if (loadingScreen) {
+      loadingScreen.parentNode.removeChild(loadingScreen);
+  }
+}
+
+function attack_audio() {
+  var audio_a = new Audio('../assets/attack.mp3');
+  audio_a.play();
+}
 const typeColors = {
     normal: "#A8A878",
     fire: "#F08030",
@@ -131,6 +158,7 @@ function setElementStyles(elements, cssProperty, value) {
   }
   
 async function loadPokemon(id) {
+    showLoadingScreen();
     try {
         const[pokemon, pokemonSpecies] = await Promise.all([
             fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then((res) => res.json()),
@@ -146,11 +174,14 @@ async function loadPokemon(id) {
             displayDetails(pokemon);
         }
         console.log("loadPokemon runs"); //debug
+        hideLoadingScreen();
         return true;
     } catch(error) {
         console.error("error while fetching", error);
+        hideLoadingScreen();
         return false;
     }
+    
 }
 
 function displayDetails(pokemon) {
@@ -205,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadOpponent_o(opponent_id) {
+  showLoadingScreen();
   try {
       //console.log("id ", opponent_id);
       const[pokemon, pokemonSpecies] = await Promise.all([
@@ -220,11 +252,14 @@ async function loadOpponent_o(opponent_id) {
   
       displayDetails_o(pokemon);
       console.log("loadOpponent runs"); //debug
+      hideLoadingScreen();
       return true;
   } catch(error) {
       console.error("error while fetching", error);
+      hideLoadingScreen();
       return false;
   }
+  
 }
 
 function displayDetails_o(pokemon) {
@@ -287,6 +322,7 @@ function playerAttack() {
   let buttons = document.querySelectorAll(".attack_buttons").forEach((button) => button.addEventListener("click",()=> {
     damager(event);
     console.log("button clicked");
+    attack_audio();
     opponentAttack();
   }
   ));
@@ -333,6 +369,7 @@ async function opponentAttack() {
     let his_attack = attacks_o[x];
 
     hp -= his_attack[2];
+    attack_audio();
     console.log("hp after attack ", hp);
     updateHP(hp);
 
