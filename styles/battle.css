@@ -12,6 +12,7 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
 }
 
 .name-wrap {
@@ -96,6 +97,7 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
 }
 
 .name-wrap_o {
@@ -216,3 +218,13 @@
   .attack_buttons_o:hover {
       background-color: #ffdb4d;
   }
+
+ 
+.hp-bar {
+    width: 100%; 
+    height: 20px;
+    background-color: green; 
+  }
+  
+  
+  

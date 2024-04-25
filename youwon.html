@@ -4,27 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You won</title>
+
 <style>
     body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f0f0f0;
-    }
-    
-    .game-over {
-        font-family: Arial, sans-serif;
-        font-size: 36px;
-        font-weight: bold;
-        color: #333;
-        text-align: center;
-    }
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+.container {
+  text-align: center;
+  margin-top: 50px; /* Adjust the margin top as needed */
+}
+
+.game-over {
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px; /* Add margin below the Game Over message */
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
 </style>
 </head>
 <body>
-    <div class="game-over">You won</div>
+    <div class="container">
+        <h1 class="game-over">You won</h1>
+        <button id="play-again-btn">Play Again</button>
+      </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const playAgainBtn = document.getElementById('play-again-btn');
+      
+        playAgainBtn.addEventListener('click', function() {
+          window.location.href = 'game.html';
+        });
+      });
+      </script>
 </body>
 </html>
+

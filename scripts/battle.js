@@ -7,6 +7,8 @@ let multiplier = 5;
 let waitForPressResolve = null;
 const hpElement = document.getElementById('hpValue');
 const hpElement_o = document.getElementById('hpValue_o');
+var maxhp = 500;
+var maxhp_o = 500;
 
 document.addEventListener("DOMContentLoaded", () => {
     const total_pokemons = 100;
@@ -68,6 +70,17 @@ const typeColors = {
     steel: "#B8B8D0",
     dark: "#EE99AC",
 };
+
+function updateHPBar(hpValue, maxHP, hpBarId) {
+  const hpBar = document.getElementById(hpBarId);
+  if (!hpBar) {
+    console.error("HP bar element not found for ID:", hpBarId);
+    return;
+  }
+  const hpPercentage = (hpValue / maxHP) * 100;
+ 
+  hpBar.style.width = hpPercentage + "%";
+}
 
 function setElementStyles(elements, cssProperty, value) {
     elements.forEach((element) => {
@@ -144,18 +157,23 @@ function setElementStyles(elements, cssProperty, value) {
   }
 
   function updateHP(newHP) {
+    updateHPBar(newHP,maxhp, 'hpBar');
     hp = newHP;
     hpElement.textContent = hp; 
     localStorage.setItem('hp', hp); //done
     console.log("updateHP runs"); //debug
+    
   }
 
   function updateHP_o(newHP) {
+    updateHPBar(newHP, maxhp_o, 'hpBar_o');
     hp_o = newHP;
     hpElement_o.textContent = hp_o; 
     localStorage.setItem('hp_o', hp_o); //done
     console.log("updateHP_o runs"); //debug
   }
+
+
   
 async function loadPokemon(id) {
     showLoadingScreen();
@@ -168,6 +186,7 @@ async function loadPokemon(id) {
         attacks = await search_pokemon_and_attacks(pokemon);
         hp = getHP(pokemon);
         hp = hp * multiplier;
+        
         localStorage.setItem('hp', hp); //done
 
         if (current_id === id) {
