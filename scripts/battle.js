@@ -13,7 +13,7 @@ var maxhp_o = 500;
 document.addEventListener("DOMContentLoaded", () => {
     const total_pokemons = 100;
     const pokemonID = new URLSearchParams(window.location.search).get("id");
-    const id = parseInt(pokemonID);
+    var id = parseInt(pokemonID);
 
     if (id<1 || id >total_pokemons) {
         id = 3;

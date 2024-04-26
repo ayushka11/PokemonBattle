@@ -52,16 +52,16 @@ function collision($div1, $div2) {
     return true;
 }
 
-function checkCollisions() {
-    balls.forEach((ball) => {
-        if (collision(ball.ball, player)) {
-            sound.play();
-            ball.ball.remove();
-            generateBall();
-            start();
-        }
-    });
-}
+// function checkCollisions() {
+//     balls.forEach((ball) => {
+//         if (collision(ball.ball, player)) {
+//             sound.play();
+//             ball.ball.remove();
+//             generateBall();
+//             start();
+//         }
+//     });
+// }
 function run() {
     player_pos.x += player_vel.x;
     player_pos.y += player_vel.y;
